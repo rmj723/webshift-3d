@@ -14,7 +14,7 @@ import { Loading } from "./components/Loading/Loading";
 import { PortalPanel } from "./components/PortalGun/PortalPanel";
 
 const App = () => {
-  const { state, loading } = useApp();
+  const { state, loading, portal } = useApp();
   return (
     <KeyboardControls
       map={[
@@ -29,7 +29,7 @@ const App = () => {
       <Player name={"Joel Green"} image="/images/joel.png" />
       <Chat />
       <Inventory />
-      {loading && <Loading />}
+      {/* {loading && <Loading />} */}
       <Canvas
         style={{
           position: "absolute",
@@ -58,7 +58,7 @@ const App = () => {
           </>
         )}
       </Canvas>
-      <PortalPanel />
+      {portal && <PortalPanel />}
     </KeyboardControls>
   );
 };
