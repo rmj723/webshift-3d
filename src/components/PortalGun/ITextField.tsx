@@ -7,8 +7,26 @@ const STextField = styled(TextField)(() => ({
     color: "white",
   },
 
+  "& > label.Mui-focused": {
+    color: "#cf4d4d",
+  },
+
   "& > div > input": {
     color: "white",
+  },
+
+  "& > div": {
+    borderRadius: "8px",
+  },
+
+  "& > div::before": {
+    borderBottom: "none",
+  },
+  "& > div::after": {
+    borderBottom: "none",
+  },
+  "& > div:hover:not(.Mui-disabled, .Mui-error):before": {
+    borderBottom: "none",
   },
 }));
 
@@ -31,7 +49,6 @@ export const ITextField: React.FC<Props> = ({ label, value, onChange }) => {
 
   return (
     <STextField
-      id="filled-basic"
       label={label}
       variant="filled"
       value={iValue}

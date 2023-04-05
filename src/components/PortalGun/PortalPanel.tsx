@@ -52,6 +52,13 @@ export const PortalPanel = () => {
           onClick={() => {
             setShowInput(true);
           }}
+          sx={{
+            backgroundColor: "#112233",
+            borderRadius: "10px",
+            "&:hover": {
+              backgroundColor: "#50433a",
+            },
+          }}
         >
           Portal Gun
         </Button>
@@ -91,7 +98,7 @@ export const PortalPanel = () => {
             justifyContent={"space-between"}
             mt={"25px"}
             sx={{
-              "& > button": { width: "48%" },
+              "& > :not(style)": { width: "48%" },
             }}
           >
             <Button
