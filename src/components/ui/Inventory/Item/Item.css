@@ -1,0 +1,17 @@
+.item-wrapper {
+    width: 5rem;
+    height: 5rem;
+    border-radius: 4px;
+    border: 2px solid black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 12px;
+}
+.item-wrapper:hover {
+    cursor: pointer;
+}
+.item-image {
+    width: 4.5rem;
+    height: auto;
+}

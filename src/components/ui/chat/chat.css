@@ -1,0 +1,48 @@
+.chat-main-wrapper{
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    z-index: 9999;
+}
+
+.chat-div {
+
+    width: 350px;
+    max-height: 370px;
+    background-color: whitesmoke;
+    z-index: 9999;
+    opacity: 0.8; 
+    border-top: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-width:3px 3px 3px; 
+    padding: 10px;  
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+    border-radius: 10px 10px 0 0px;
+    font-family: monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    line-height: 17px;
+    overflow-y: scroll;
+
+}
+.entry-username{
+    font-weight: 800;
+    font-size: 13px;
+   
+}
+
+.input-entry {
+    opacity: 0.8; 
+    border-bottom: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    border-right: 1px solid #ccc;
+    border-top: 0.5px solid #868484;
+
+    border-width:3px 3px 3px; 
+    padding: 10px;  
+    box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+    border-radius: 0 0 10px 10px;
+    font-family: monospace;
+    background-color: whitesmoke;
+}

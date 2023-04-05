@@ -1,0 +1,48 @@
+.inventory-wrapper {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 9999;
+  display: flex;
+}
+.inventory-icon {
+  /* wid: 60px; */
+ width: 200px;
+  background-color: whitesmoke;
+  z-index: 9999;
+  opacity: 0.8;
+  border: 1px solid #ccc;
+  border-width: 3px 3px 3px;
+  padding: 7px;
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+  border-radius: 10px;
+}
+.icon-image:hover {
+  cursor: pointer;
+}
+.icon-image {
+  width: 50px;
+  height: auto;
+  margin-top: 4px;
+  margin-right: 5px;
+}
+.image-wrapper {
+  align-items: flex-start;
+  justify-content: flex-end;
+  display: flex;
+}
+
+.items-wrapper {
+    margin-top: 1.5rem;
+  display: flex;
+  justify-content: space-evenly;
+  flex-wrap: wrap;
+}
+
+.inventory-title {
+    margin-top: -35px;
+    font-family: monospace;
+    font-size: 1.3rem;
+    font-weight: 100;
+    margin-left: 15px;
+}
