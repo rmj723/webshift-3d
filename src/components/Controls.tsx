@@ -2,15 +2,16 @@ import React, { useEffect, useRef } from "react";
 import * as THREE from "three";
 import { OrbitControls } from "@react-three/drei";
 import useApp from "../store/useApp";
-import { useFrame } from "@react-three/fiber";
+import { useFrame, useThree } from "@react-three/fiber";
 
 export const Controls = () => {
   const { state } = useApp();
   const ref = useRef<any>(null!);
-
+  const { camera } = useThree();
   useEffect(() => {
     state.orbit = ref.current;
-  }, [state]);
+    state.camera = camera as THREE.PerspectiveCamera;
+  }, [state, camera]);
 
   useFrame(({ camera }) => {
     if (!ref.current) return;

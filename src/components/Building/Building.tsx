@@ -33,6 +33,8 @@ export function Buildings({ originGPS }: Props) {
   const { worker } = useWorker();
   const [geos, setGeos] = useState<any>();
 
+  state.originGPS = originGPS;
+
   const createBuildings = useCallback(() => {
     worker.convertFeaturesToGeos(allFeatures, originGPS).then((result) => {
       setGeos(result);

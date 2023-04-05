@@ -8,6 +8,7 @@ import { Vehicle } from "./components/Vehicle";
 import { Sky } from "./components/Sky";
 import { Airplanes } from "./components/Airplanes";
 import { PortalGun } from "./components/PortalGun/PortalGun";
+import useApp from "./store/useApp";
 
 export function Scene() {
   return (
@@ -31,7 +32,7 @@ export function Scene() {
       />
       <Airplanes />
       <Terrain />
-      {/* <PortalGun name="gun1" position={[1, 0, -2]} /> */}
+      <PortalGun name="gun1" position={[1, 0, -2]} />
       <Buildings originGPS={[-73.9730278, 40.7636166]} />
       <Sky />
     </>
