@@ -31,8 +31,8 @@ export function Scene() {
       />
       <Airplanes />
       <Terrain />
-      <PortalGun name="gun1" position={[1, 0, -2]} />
-      {/* <Buildings originGPS={[-73.9730278, 40.7636166]} /> */}
+      {/* <PortalGun name="gun1" position={[1, 0, -2]} /> */}
+      <Buildings originGPS={[-73.9730278, 40.7636166]} />
       <Sky />
     </>
   );
