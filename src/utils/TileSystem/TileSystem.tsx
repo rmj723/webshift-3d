@@ -117,7 +117,7 @@ async function load(
         geohashToFeatureId.get(tempHash).push(featureId);
       }
     });
-    addFeatures(featureObject);
+    addFeatures(featureObject, neighborsHashes);
   });
 
   remove(getIdsToRemove(geohashToFeatureId, featureToGeoHash, geoarray));

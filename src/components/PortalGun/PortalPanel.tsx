@@ -3,9 +3,7 @@ import { Box, Button, Typography } from "@mui/material";
 import styled from "@emotion/styled";
 import { ITextField } from "./ITextField";
 import useApp from "../../store/useApp";
-import { gpsToPos } from "../../utils/gpsToPos";
-import { useThree } from "@react-three/fiber";
-import { Vector3 } from "three";
+import { GeolibInputCoordinates } from "geolib/es/types";
 
 const Container = styled.div`
   position: absolute;
@@ -39,10 +37,12 @@ const InputPanel = styled.div`
 `;
 
 export const PortalPanel = () => {
-  const { state } = useApp();
+  const { setOriginGPS, setLoading, setPortal } = useApp();
   const [showInput, setShowInput] = React.useState(false);
-  const [long, setLong] = React.useState(-73.9730278);
-  const [lat, setLat] = React.useState(40.7636166);
+  // 34.213372, -118.589609
+  // 40.7636166 -73.9730278
+  const [long, setLong] = React.useState(-118.589609);
+  const [lat, setLat] = React.useState(34.213372);
 
   return (
     <Container>
@@ -79,16 +79,16 @@ export const PortalPanel = () => {
             }}
           >
             <ITextField
+              label="Latitude"
+              value={lat}
+              onChange={(v) => setLat(v)}
+            />
+            <ITextField
               label="Longitude"
               value={long}
               onChange={(v) => {
                 setLong(v);
               }}
-            />
-            <ITextField
-              label="Latitude"
-              value={lat}
-              onChange={(v) => setLat(v)}
             />
           </Box>
 
@@ -113,14 +113,9 @@ export const PortalPanel = () => {
               variant="contained"
               onClick={() => {
                 setShowInput(false);
-                const { avatar, orbit, camera, originGPS } = state;
-                // const pos = gpsToPos([long, lat], state.originGPS);
-                const pos = gpsToPos([long, lat], [-73.9730278, 40.7636166]);
-                avatar.position.x = pos[0];
-                avatar.position.z = pos[1];
-                orbit.target.copy(avatar.position);
-                camera.position.set(pos[0] + 5, 4, pos[1] - 10);
-                orbit.update();
+                setOriginGPS([long, lat] as GeolibInputCoordinates);
+                setLoading(true);
+                setPortal(null);
               }}
             >
               Teleport

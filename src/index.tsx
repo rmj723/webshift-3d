@@ -29,7 +29,7 @@ const App = () => {
       <Player name={"Joel Green"} image="/images/joel.png" />
       <Chat />
       <Inventory />
-      {/* {loading && <Loading />} */}
+      {loading && <Loading />}
       <Canvas
         style={{
           position: "absolute",

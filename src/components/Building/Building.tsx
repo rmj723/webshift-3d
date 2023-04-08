@@ -20,27 +20,21 @@ extend({ WaterMaterial });
 
 let allFeatures: any[] = [];
 
-type Props = {
-  originGPS: GeolibInputCoordinates;
-};
-
-export function Buildings({ originGPS }: Props) {
+export function Buildings() {
   const { materials } = useMaterials();
   const groupRef = useRef<Group>(null!);
 
-  const { target, state, loading, setLoading } = useApp();
+  const { target, state, loading, setLoading, originGPS } = useApp();
 
   const { worker } = useWorker();
   const [geos, setGeos] = useState<any>();
-
-  state.originGPS = originGPS;
 
   const createBuildings = useCallback(() => {
     worker.convertFeaturesToGeos(allFeatures, originGPS).then((result) => {
       setGeos(result);
       if (loading) setLoading(false);
     });
-  }, []);
+  }, [originGPS, loading, setLoading]);
 
   useEffect(() => {
     const timer = window.setInterval(() => {
@@ -51,13 +45,13 @@ export function Buildings({ originGPS }: Props) {
       const { x, z } = pos;
 
       const gps = posToGps([x / scale, -z / scale], originGPS);
-
       load(
         gps,
         6,
-        ({ features }: any) => {
+        ({ features }, neighborsHashes) => {
           allFeatures = [...allFeatures, ...features];
           createBuildings();
+          state.neighborsHashes = neighborsHashes;
         },
         state.geohashToFeatureId,
         state.featureToGeoHash,
@@ -72,7 +66,7 @@ export function Buildings({ originGPS }: Props) {
     return () => {
       clearInterval(timer);
     };
-  }, [target]);
+  }, [target, originGPS]);
 
   useFrame((_, delta) => {
     if (!groupRef.current) return;

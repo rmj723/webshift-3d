@@ -100,12 +100,12 @@ export function useVehicle(
     if (forward) {
       acceleration.z -= maxSpeed * Math.cos(vehicleRot.y);
       acceleration.x -= maxSpeed * Math.sin(vehicleRot.y);
-      if (maxSpeed < 0.3) maxSpeed += 0.002;
+      if (maxSpeed < 1) maxSpeed += 0.002;
     }
     if (backward) {
       acceleration.z += maxSpeed * Math.cos(vehicleRot.y);
       acceleration.x += maxSpeed * Math.sin(vehicleRot.y);
-      if (maxSpeed < 0.3) maxSpeed += 0.002;
+      if (maxSpeed < 1) maxSpeed += 0.002;
     }
     if (leftward) {
       vehicleRot.y += 0.02;

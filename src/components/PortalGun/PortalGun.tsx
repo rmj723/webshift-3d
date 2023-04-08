@@ -14,10 +14,19 @@ export const PortalGun: React.FC<Props> = ({ name, ...otherProps }) => {
   const [pos] = React.useState(new Vector3(0, 0, 0));
 
   const [quat] = React.useState(new Quaternion());
+
   React.useEffect(() => {
     const { avatar } = state;
     boneRef.current = avatar.getObjectByName("mixamorigRightHand") as Bone;
-  }, [state]);
+
+    if (portal === null) {
+      const { position, rotation } = otherProps;
+      position &&
+        groupRef.current.position.set(position[0], position[1], position[2]);
+      rotation &&
+        groupRef.current.rotation.set(rotation[0], rotation[1], rotation[2]);
+    }
+  }, [state, portal, otherProps]);
 
   useFrame(() => {
     if (boneRef.current && portal === groupRef.current) {
