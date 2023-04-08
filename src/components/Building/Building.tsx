@@ -16,15 +16,17 @@ import { useMaterials } from "./useMaterials";
 import { createGeometry, scale } from "./Building.Utils";
 import { InstancedTrees } from "./InstancedTrees";
 import { useWorker } from "./Building.hooks";
+import { TileType } from "../../utils/types";
 extend({ WaterMaterial });
 
 let allFeatures: any[] = [];
-
+let previewTiles: TileType[] = [];
 export function Buildings() {
   const { materials } = useMaterials();
   const groupRef = useRef<Group>(null!);
 
-  const { target, state, loading, setLoading, originGPS } = useApp();
+  const { target, state, loading, setLoading, originGPS, tiles, setTiles } =
+    useApp();
 
   const { worker } = useWorker();
   const [geos, setGeos] = useState<any>();
@@ -51,7 +53,10 @@ export function Buildings() {
         ({ features }, neighborsHashes) => {
           allFeatures = [...allFeatures, ...features];
           createBuildings();
-          state.neighborsHashes = neighborsHashes;
+          if (previewTiles !== neighborsHashes) {
+            setTiles(neighborsHashes);
+            previewTiles = neighborsHashes;
+          }
         },
         state.geohashToFeatureId,
         state.featureToGeoHash,
@@ -66,7 +71,7 @@ export function Buildings() {
     return () => {
       clearInterval(timer);
     };
-  }, [target, originGPS]);
+  }, [target, originGPS, setTiles]);
 
   useFrame((_, delta) => {
     if (!groupRef.current) return;

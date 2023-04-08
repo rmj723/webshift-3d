@@ -4,6 +4,6 @@ export interface PlayerType {
   long: number;
 }
 
-export type NeighborHashesType = {
+export type TileType = {
   [key in "c" | "e" | "n" | "ne" | "nw" | "s" | "se" | "sw" | "w"]: string;
 };
