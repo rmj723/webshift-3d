@@ -15,6 +15,7 @@ export default create(
         panning: false,
         cameraPosOffset: new Vector3(),
         avatar: null! as Group,
+        avatarAnim: "Idle",
         vehicle: null! as Group,
         geohashToFeatureId: new Map(),
         featureToGeoHash: new Map(),
@@ -30,7 +31,7 @@ export default create(
         });
       },
 
-      loading: true,
+      loading: false,
       setLoading: (loading: boolean) => {
         set(() => {
           return { loading };

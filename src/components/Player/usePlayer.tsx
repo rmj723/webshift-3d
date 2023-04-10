@@ -71,7 +71,7 @@ export function usePlayer({
       const fadeDuration = 0.2;
       currentAnim.fadeOut(fadeDuration);
       animToPlay!.reset().fadeIn(fadeDuration).play();
-      action.current = actionToPlay;
+      action.current = state.avatarAnim = actionToPlay;
     }
 
     if (action.current === "Run" || action.current === "Walk") {
@@ -120,7 +120,7 @@ export function usePlayer({
       walkDirection.normalize();
       walkDirection.applyAxisAngle(rotateAngle, directionOffset);
 
-      const velocity = actionToPlay === "Run" ? runVelocity : walkVelocity;
+      const velocity = state.avatarAnim === "Run" ? runVelocity : walkVelocity;
 
       const moveX = walkDirection.x * velocity * delta;
       const moveZ = walkDirection.z * velocity * delta;
