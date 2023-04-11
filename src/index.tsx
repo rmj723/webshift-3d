@@ -16,50 +16,56 @@ import { PortalPanel } from "./components/PortalGun/PortalPanel";
 const App = () => {
   const { state, loading, portal } = useApp();
   return (
-    <KeyboardControls
-      map={[
-        { name: "forward", keys: ["ArrowUp", "KeyW"] },
-        { name: "backward", keys: ["ArrowDown", "KeyS"] },
-        { name: "leftward", keys: ["ArrowLeft", "KeyA"] },
-        { name: "rightward", keys: ["ArrowRight", "KeyD"] },
-        { name: "run", keys: ["Shift"] },
-        { name: "jump", keys: ["Space"] },
-      ]}
-    >
-      <Player name={"Joel Green"} image="/images/joel.png" />
+    <>
       <Chat />
+
+      {portal && <PortalPanel />}
+
       <Inventory />
       {loading && <Loading />}
-      <Canvas
-        style={{
-          position: "absolute",
-          top: "0",
-          left: "0",
-          width: "100%",
-          height: "100%",
-        }}
-        shadows
-        camera={{
-          fov: 45,
-          near: 0.1,
-          far: 10000,
-          position: [5, 4, -10],
-        }}
-        onPointerDown={(e) => {
-          if (e.button === 2) state.panning = true;
-        }}
-      >
-        <Scene />
 
-        {window.location.href.includes("localhost") && (
-          <>
-            <Perf position="bottom-right" />
-            <SceneExporter />
-          </>
-        )}
-      </Canvas>
-      {portal && <PortalPanel />}
-    </KeyboardControls>
+      <KeyboardControls
+        map={[
+          { name: "forward", keys: ["ArrowUp", "KeyW"] },
+          { name: "backward", keys: ["ArrowDown", "KeyS"] },
+          { name: "leftward", keys: ["ArrowLeft", "KeyA"] },
+          { name: "rightward", keys: ["ArrowRight", "KeyD"] },
+          { name: "run", keys: ["Shift"] },
+          { name: "jump", keys: ["Space"] },
+        ]}
+      >
+        <Player name={"Joel Green"} image="/images/joel.png" />
+
+        <Canvas
+          style={{
+            position: "absolute",
+            top: "0",
+            left: "0",
+            width: "100%",
+            height: "100%",
+          }}
+          shadows
+          camera={{
+            fov: 45,
+            near: 0.1,
+            far: 10000,
+            position: [5, 4, -10],
+          }}
+          onPointerDown={(e) => {
+            if (e.button === 2) state.panning = true;
+          }}
+        >
+          <Scene />
+
+          {window.location.href.includes("localhost") && (
+            <>
+              <Perf position="bottom-right" />
+              <SceneExporter />
+            </>
+          )}
+        </Canvas>
+      </KeyboardControls>
+    </>
   );
 };
 

@@ -3,7 +3,8 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { subscribeWithSelector } from "zustand/middleware";
 import { Group, Mesh, PerspectiveCamera, Vector3 } from "three";
 import { GeolibInputCoordinates } from "geolib/es/types";
-import { TileType, PlayerType } from "../utils/types";
+import { TileType } from "../utils/types";
+import * as Ably from "ably";
 
 export default create(
   subscribeWithSelector((set: any) => {
@@ -56,6 +57,13 @@ export default create(
       setTiles: (tiles: TileType) => {
         set(() => {
           return { tiles };
+        });
+      },
+
+      ablyRealtime: null! as Ably.Types.RealtimePromise,
+      setAblyRealtime: (ablyRealtime: Ably.Types.RealtimePromise) => {
+        set(() => {
+          return { ablyRealtime };
         });
       },
     };

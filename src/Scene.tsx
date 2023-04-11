@@ -32,7 +32,7 @@ export function Scene() {
       <Airplanes />
       <Terrain />
       <PortalGun name="gun1" position={[1, 0, -2]} />
-      <Buildings />
+      {/* <Buildings /> */}
       <Sky />
     </>
   );

@@ -37,7 +37,7 @@ export const OtherPlayer: React.FC<Props> = ({ name, ...rest }) => {
     action.current = mixer.current.clipAction(animations[3]);
     action.current.loop = THREE.LoopRepeat;
     action.current.play();
-    // g.add(model);
+    g.add(model);
 
     const animationsMap = new Map([
       ["Idle", mixer.current.clipAction(animations[0])],
@@ -68,12 +68,5 @@ export const OtherPlayer: React.FC<Props> = ({ name, ...rest }) => {
     mixer.current.update(delta);
   });
 
-  return (
-    <group name={name} ref={group} {...rest}>
-      <mesh>
-        <boxGeometry args={[0.1]} />
-        <meshStandardMaterial color="#5566aa" />
-      </mesh>
-    </group>
-  );
+  return <group name={name} ref={group} {...rest} />;
 };

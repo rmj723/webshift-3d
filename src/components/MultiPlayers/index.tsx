@@ -19,7 +19,7 @@ let avatarTransformData: { [key: string]: AvatarProp } = {};
 let idleTimers: number[] = [];
 
 export const MultiPlayers = () => {
-  const { state, tiles } = useApp();
+  const { state, tiles, setAblyRealtime } = useApp();
   const [avatarIDs, setAvatarIDs] = React.useState<string[]>([]);
 
   const groupRef = React.useRef<THREE.Group>(null!);
@@ -27,7 +27,7 @@ export const MultiPlayers = () => {
   const [, getKeyboardControls] = useKeyboardControls();
 
   useEffect(() => {
-    // const tiles = { c: 12 };
+    const tiles = { c: 12 };
     if (Object.keys(tiles).length === 0) return;
     let timer = 0;
 
@@ -35,9 +35,9 @@ export const MultiPlayers = () => {
       const apiKey =
         "ybyXHg.mHyTug:bycaIuavWh9GhIL9Q26dosOkpPNN7id5WmPlW1Kvb34";
       const realtime = new Ably.Realtime.Promise(apiKey);
-
       await realtime.connection.once("connected");
       console.log("Connected to Ably!");
+      setAblyRealtime(realtime);
 
       let i = 0;
       for (let key in tiles) {
@@ -98,8 +98,7 @@ export const MultiPlayers = () => {
     if (!groupRef.current) return;
     groupRef.current.children.forEach((g) => {
       const { position, rotation, avatarAnim } = avatarTransformData[g.name];
-      // g.position.lerp(position, 0.1);
-      g.position.copy(position);
+      g.position.lerp(position, 0.1);
       g.rotation.copy(rotation);
       g.userData.animate(avatarAnim);
     });
