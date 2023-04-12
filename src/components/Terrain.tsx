@@ -18,8 +18,11 @@ export function Terrain() {
   useFrame(() => {
     if (!state.avatar) return;
 
-    const { avatar, vehicle } = state;
-    const pos = target === "avatar" ? avatar.position : vehicle.position;
+    const { avatar, vehicles } = state;
+    const pos =
+      target === "avatar"
+        ? avatar.position
+        : vehicles[avatar.userData.vehicleName].position;
     const { x, z } = pos;
     x_id = Math.floor(x / length);
     z_id = Math.floor(z / length);

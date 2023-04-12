@@ -17,7 +17,7 @@ export default create(
         cameraPosOffset: new Vector3(),
         avatar: null! as Group,
         avatarAnim: "Idle",
-        vehicle: null! as Group,
+        vehicles: {} as { [key: string]: Group },
         geohashToFeatureId: new Map(),
         featureToGeoHash: new Map(),
         staticColliders: [] as Mesh[],

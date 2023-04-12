@@ -30,8 +30,9 @@ export function useVehicle(
   );
 
   useEffect(() => {
-    const { vehicle, orbit } = state;
-    if (!orbit || !vehicle || target !== "vehicle") return;
+    const { vehicles, orbit, avatar } = state;
+    if (!orbit || target !== "vehicle") return;
+    const vehicle = vehicles[avatar.userData.vehicleName];
     vehicleRot.setFromEuler(vehicle.rotation);
     vehiclePos.copy(vehicle.position);
 
@@ -54,7 +55,10 @@ export function useVehicle(
     )
       return;
 
-    const vehicle = vehicleRef.current;
+    const { avatar, vehicles } = state;
+    const vehicle = vehicles[avatar.userData.vehicleName];
+
+    if (vehicle !== vehicleRef.current) return;
 
     acceleration.set(0, 0, 0);
 
@@ -105,7 +109,7 @@ export function useVehicle(
     if (backward) {
       acceleration.z += maxSpeed * Math.cos(vehicleRot.y);
       acceleration.x += maxSpeed * Math.sin(vehicleRot.y);
-      if (maxSpeed < 1) maxSpeed += 0.002;
+      maxSpeed = 0.2;
     }
     if (leftward) {
       vehicleRot.y += 0.02;
