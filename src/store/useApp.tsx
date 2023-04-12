@@ -3,18 +3,21 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { subscribeWithSelector } from "zustand/middleware";
 import { Group, Mesh, PerspectiveCamera, Vector3 } from "three";
 import { GeolibInputCoordinates } from "geolib/es/types";
+import { TileType } from "../utils/types";
+import * as Ably from "ably";
 
 export default create(
   subscribeWithSelector((set: any) => {
     return {
       state: {
+        playerID: Math.random().toString(),
         orbit: null! as OrbitControls,
         camera: null! as PerspectiveCamera,
         panning: false,
         cameraPosOffset: new Vector3(),
         avatar: null! as Group,
-        vehicle: null! as Group,
-        originGPS: null! as GeolibInputCoordinates,
+        avatarAnim: "Idle",
+        vehicles: {} as { [key: string]: Group },
         geohashToFeatureId: new Map(),
         featureToGeoHash: new Map(),
         staticColliders: [] as Mesh[],
@@ -29,17 +32,38 @@ export default create(
         });
       },
 
-      loading: true,
+      loading: false,
       setLoading: (loading: boolean) => {
         set(() => {
           return { loading };
         });
       },
 
+      originGPS: [-73.9730278, 40.7636166] as GeolibInputCoordinates,
+      setOriginGPS: (originGPS: GeolibInputCoordinates) => {
+        set(() => {
+          return { originGPS };
+        });
+      },
+
       portal: null! as Group,
-      setPortal: (portal: Group) => {
+      setPortal: (portal: Group | null) => {
         set(() => {
           return { portal };
+        });
+      },
+
+      tiles: {} as TileType,
+      setTiles: (tiles: TileType) => {
+        set(() => {
+          return { tiles };
+        });
+      },
+
+      ablyRealtime: null! as Ably.Types.RealtimePromise,
+      setAblyRealtime: (ablyRealtime: Ably.Types.RealtimePromise) => {
+        set(() => {
+          return { ablyRealtime };
         });
       },
     };

@@ -16,63 +16,67 @@ import { useMaterials } from "./useMaterials";
 import { createGeometry, scale } from "./Building.Utils";
 import { InstancedTrees } from "./InstancedTrees";
 import { useWorker } from "./Building.hooks";
+import { TileType } from "../../utils/types";
+import { sampleTiles } from "./sampleTiles";
 extend({ WaterMaterial });
 
 let allFeatures: any[] = [];
-
-type Props = {
-  originGPS: GeolibInputCoordinates;
-};
-
-export function Buildings({ originGPS }: Props) {
+let previewTiles: TileType[] = [];
+export function Buildings() {
   const { materials } = useMaterials();
   const groupRef = useRef<Group>(null!);
 
-  const { target, state, loading, setLoading } = useApp();
+  const { target, state, loading, setLoading, originGPS, tiles, setTiles } =
+    useApp();
 
   const { worker } = useWorker();
   const [geos, setGeos] = useState<any>();
-
-  state.originGPS = originGPS;
 
   const createBuildings = useCallback(() => {
     worker.convertFeaturesToGeos(allFeatures, originGPS).then((result) => {
       setGeos(result);
       if (loading) setLoading(false);
     });
-  }, []);
+  }, [originGPS, loading, setLoading]);
 
   useEffect(() => {
-    const timer = window.setInterval(() => {
-      if (!state.avatar) return;
+    allFeatures = sampleTiles;
+    createBuildings();
 
-      const { avatar, vehicle } = state;
-      const pos = target === "avatar" ? avatar.position : vehicle.position;
-      const { x, z } = pos;
+    // const timer = window.setInterval(() => {
+    //   if (!state.avatar) return;
 
-      const gps = posToGps([x / scale, -z / scale], originGPS);
+    //   const { avatar, vehicle } = state;
+    //   const pos = target === "avatar" ? avatar.position : vehicle.position;
+    //   const { x, z } = pos;
 
-      load(
-        gps,
-        6,
-        ({ features }: any) => {
-          allFeatures = [...allFeatures, ...features];
-          createBuildings();
-        },
-        state.geohashToFeatureId,
-        state.featureToGeoHash,
-        (ids) => {
-          worker.removeFeatures(allFeatures, ids).then((filteredFeatures) => {
-            allFeatures = filteredFeatures;
-          });
-        }
-      );
-    }, 2000);
+    //   const gps = posToGps([x / scale, -z / scale], originGPS);
+    //   load(
+    //     gps,
+    //     6,
+    //     ({ features }, neighborsHashes) => {
+    //       allFeatures = [...allFeatures, ...features];
+    //       console.log("all", JSON.stringify(allFeatures));
+    //       createBuildings();
+    //       if (previewTiles !== neighborsHashes) {
+    //         setTiles(neighborsHashes);
+    //         previewTiles = neighborsHashes;
+    //       }
+    //     },
+    //     state.geohashToFeatureId,
+    //     state.featureToGeoHash,
+    //     (ids) => {
+    //       worker.removeFeatures(allFeatures, ids).then((filteredFeatures) => {
+    //         allFeatures = filteredFeatures;
+    //       });
+    //     }
+    //   );
+    // }, 2000);
 
-    return () => {
-      clearInterval(timer);
-    };
-  }, [target]);
+    // return () => {
+    //   clearInterval(timer);
+    // };
+  }, [target, originGPS, setTiles]);
 
   useFrame((_, delta) => {
     if (!groupRef.current) return;

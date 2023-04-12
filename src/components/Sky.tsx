@@ -12,8 +12,11 @@ export const Sky = () => {
   useFrame(() => {
     if (!state.avatar || !meshRef.current) return;
 
-    const { avatar, vehicle } = state;
-    const pos = target === "avatar" ? avatar.position : vehicle.position;
+    const { avatar, vehicles } = state;
+    const pos =
+      target === "avatar"
+        ? avatar.position
+        : vehicles[avatar.userData.vehicleName].position;
     const { x, z } = pos;
     meshRef.current.position.set(x, -30, z);
   });
