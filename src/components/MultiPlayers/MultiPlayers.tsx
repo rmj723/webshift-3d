@@ -3,19 +3,23 @@ import { Player } from "../Player/Player";
 import React, { useEffect } from "react";
 import * as Ably from "ably";
 import * as THREE from "three";
+import { Vector3, Euler } from "three";
 import { useKeyboardControls } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { OtherPlayer } from "./OtherPlayer";
+import { TARGETS } from "../../utils/types";
 
-type AvatarProp = {
+type PlayerStateType = {
   position: THREE.Vector3;
   rotation: THREE.Euler;
-  avatarAnim: string;
+  animation: string;
+  target: string;
+  vehicleName: string;
 };
 
 // number of players
 let currentAvatarIDs: string[] = [];
-let avatarTransformData: { [key: string]: AvatarProp } = {};
+let playerStates: { [key: string]: PlayerStateType } = {};
 let idleTimers: number[] = [];
 
 export const MultiPlayers = () => {
@@ -46,8 +50,16 @@ export const MultiPlayers = () => {
         const channel = realtime.channels.get(value);
 
         await channel.subscribe((msg) => {
-          const { id, position, rotation, avatarAnim } = msg.data;
-          avatarTransformData[id] = { position, rotation, avatarAnim };
+          const { id, playerState } = msg.data;
+          const arr = playerState.split(",");
+
+          playerStates[id] = {
+            position: new Vector3(arr[0], arr[1], arr[2]),
+            rotation: new Euler(arr[3], arr[4], arr[5]),
+            animation: arr[6],
+            target: arr[7],
+            vehicleName: arr[8],
+          };
 
           // Add a new avatar
           if (id !== state.playerID && !currentAvatarIDs.includes(id)) {
@@ -58,7 +70,7 @@ export const MultiPlayers = () => {
           // Detect Idle
           if (idleTimers[i]) clearTimeout(idleTimers[i]);
           idleTimers[i] = window.setTimeout(() => {
-            avatarTransformData[id].avatarAnim = "Idle";
+            playerStates[id].animation = "Idle";
           }, 500);
         });
         ++i;
@@ -75,13 +87,26 @@ export const MultiPlayers = () => {
               rightward,
             ].includes(true);
 
-            const { position, rotation } = state.avatar;
+            const {
+              position,
+              rotation,
+              userData: { target, vehicleName },
+            } = state.avatar;
+
+            const vehicle =
+              target === TARGETS.VEHICLE ? state.vehicles[vehicleName] : null;
+
+            const convert = (s: Vector3 | Euler) =>
+              `${s.x.toFixed(2)},${s.y.toFixed(2)},${s.z.toFixed(2)}`;
+
             if (dirKeyPressed) {
               await channel.publish("update", {
                 id: state.playerID,
-                position,
-                rotation,
-                avatarAnim: state.avatarAnim,
+                playerState: `${convert(
+                  vehicle ? vehicle.position : position
+                )},${convert(vehicle ? vehicle.rotation : rotation)},${
+                  state.avatarAnim
+                },${target},${vehicleName}`,
               });
             }
           }, 100);
@@ -97,10 +122,19 @@ export const MultiPlayers = () => {
   useFrame(() => {
     if (!groupRef.current) return;
     groupRef.current.children.forEach((g) => {
-      const { position, rotation, avatarAnim } = avatarTransformData[g.name];
-      g.position.lerp(position, 0.1);
-      g.rotation.copy(rotation);
-      g.userData.animate(avatarAnim);
+      const { position, rotation, animation, target, vehicleName } =
+        playerStates[g.name];
+      if (target === TARGETS.AVATAR) {
+        g.visible = true;
+        g.position.lerp(position, 0.1);
+        g.rotation.copy(rotation);
+        g.userData.animate(animation);
+      } else {
+        g.visible = false;
+        const vehicle = state.vehicles[vehicleName];
+        vehicle.position.lerp(position, 0.1);
+        vehicle.rotation.copy(rotation);
+      }
     });
   });
 

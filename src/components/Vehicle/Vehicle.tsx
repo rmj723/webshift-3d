@@ -4,6 +4,7 @@ import { GroupProps } from "@react-three/fiber";
 import { useVehicle } from "./useVehicle";
 import { Group, Mesh } from "three";
 import useApp from "../../store/useApp";
+import { TARGETS } from "../../utils/types";
 
 interface Props extends GroupProps {
   vehicleName: string; // Unique ID of Vehicle
@@ -28,11 +29,11 @@ export function Vehicle({ vehicleName, ...otherProps }: Props) {
     e.stopPropagation();
     const { avatar } = state;
 
-    if (target === "avatar") {
+    if (target === TARGETS.AVATAR) {
       /// get on a car
       avatar.visible = false;
-      avatar.userData.vehicleName = vehicleName;
-      setTarget("vehicle");
+      avatar.userData = { vehicleName, target: TARGETS.VEHICLE };
+      setTarget(TARGETS.VEHICLE);
       state.panning = false;
     } else {
       // get off a car
@@ -40,7 +41,8 @@ export function Vehicle({ vehicleName, ...otherProps }: Props) {
       avatar.position.x = pos.x + 2;
       avatar.position.z = pos.z + 2;
       avatar.visible = true;
-      setTarget("avatar");
+      setTarget(TARGETS.AVATAR);
+      avatar.userData.target = TARGETS.AVATAR;
       state.panning = false;
     }
   };
