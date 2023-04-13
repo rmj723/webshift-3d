@@ -12,7 +12,10 @@ export function useVehicle(
   backWheelRef: RefObject<THREE.Group | null>
 ) {
   const camera = useThree((state) => state.camera);
-  const { state, target } = useApp();
+  const {
+    state,
+    data: { target },
+  } = useApp();
 
   const [, getKeyboardControls] = useKeyboardControls();
 

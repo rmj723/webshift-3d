@@ -5,7 +5,10 @@ import "./chat.css";
 
 let msgCount = 0;
 export default function chat() {
-  const { state, ablyRealtime } = useApp();
+  const {
+    state,
+    data: { ablyRealtime },
+  } = useApp();
   const [entries, setEntries] = useState<
     { username: string; text: string; color: string }[]
   >([]);

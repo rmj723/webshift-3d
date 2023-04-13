@@ -23,7 +23,11 @@ let playerStates: { [key: string]: PlayerStateType } = {};
 let idleTimers: number[] = [];
 
 export const MultiPlayers = () => {
-  const { state, tiles, setAblyRealtime } = useApp();
+  const {
+    state,
+    data: { tiles },
+    updateData,
+  } = useApp();
   const [avatarIDs, setAvatarIDs] = React.useState<string[]>([]);
 
   const groupRef = React.useRef<THREE.Group>(null!);
@@ -41,7 +45,7 @@ export const MultiPlayers = () => {
       const realtime = new Ably.Realtime.Promise(apiKey);
       await realtime.connection.once("connected");
       console.log("Connected to Ably!");
-      setAblyRealtime(realtime);
+      updateData({ ablyRealtime: realtime });
 
       let i = 0;
       for (let key in tiles) {

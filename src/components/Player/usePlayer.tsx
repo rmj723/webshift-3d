@@ -18,7 +18,10 @@ export function usePlayer({
 }: CharacterControllerProps) {
   const camera = useThree((state) => state.camera);
 
-  const { target, state } = useApp();
+  const {
+    data: { target },
+    state,
+  } = useApp();
 
   const [, getKeyboardControls] = useKeyboardControls();
 

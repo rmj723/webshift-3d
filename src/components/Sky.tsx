@@ -7,7 +7,10 @@ export const Sky = () => {
   const meshRef = useRef<Mesh>(null);
   const skyMap = useLoader(TextureLoader, "./textures/sky.jpg");
 
-  const { target, state } = useApp();
+  const {
+    data: { target },
+    state,
+  } = useApp();
 
   useFrame(() => {
     if (!state.avatar || !meshRef.current) return;

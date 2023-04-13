@@ -10,7 +10,11 @@ interface Props extends GroupProps {
   vehicleName: string; // Unique ID of Vehicle
 }
 export function Vehicle({ vehicleName, ...otherProps }: Props) {
-  const { target, setTarget, state } = useApp();
+  const {
+    data: { target },
+    updateData,
+    state,
+  } = useApp();
   // @ts-ignore
   const { nodes, materials } = useGLTF("./models/car.glb");
   const vehicleRef = useRef<Group>(null!);
@@ -33,7 +37,7 @@ export function Vehicle({ vehicleName, ...otherProps }: Props) {
       /// get on a car
       avatar.visible = false;
       avatar.userData = { vehicleName, target: TARGETS.VEHICLE };
-      setTarget(TARGETS.VEHICLE);
+      updateData({ target: TARGETS.VEHICLE });
       state.panning = false;
     } else {
       // get off a car
@@ -41,7 +45,7 @@ export function Vehicle({ vehicleName, ...otherProps }: Props) {
       avatar.position.x = pos.x + 2;
       avatar.position.z = pos.z + 2;
       avatar.visible = true;
-      setTarget(TARGETS.AVATAR);
+      updateData({ target: TARGETS.AVATAR });
       avatar.userData.target = TARGETS.AVATAR;
       state.panning = false;
     }

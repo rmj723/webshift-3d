@@ -26,8 +26,11 @@ export function Buildings() {
   const { materials } = useMaterials();
   const groupRef = useRef<Group>(null!);
 
-  const { target, state, loading, setLoading, originGPS, tiles, setTiles } =
-    useApp();
+  const {
+    data: { target, loading, originGPS, tiles },
+    state,
+    updateData,
+  } = useApp();
 
   const { worker } = useWorker();
   const [geos, setGeos] = useState<any>();
@@ -35,9 +38,9 @@ export function Buildings() {
   const createBuildings = useCallback(() => {
     worker.convertFeaturesToGeos(allFeatures, originGPS).then((result) => {
       setGeos(result);
-      if (loading) setLoading(false);
+      if (loading) updateData({ loading: false });
     });
-  }, [originGPS, loading, setLoading]);
+  }, [originGPS, loading, updateData]);
 
   useEffect(() => {
     allFeatures = sampleTiles;
@@ -59,7 +62,7 @@ export function Buildings() {
     //       console.log("all", JSON.stringify(allFeatures));
     //       createBuildings();
     //       if (previewTiles !== neighborsHashes) {
-    //         setTiles(neighborsHashes);
+    //         updateData({tiles: neighborsHashes});
     //         previewTiles = neighborsHashes;
     //       }
     //     },
@@ -76,7 +79,7 @@ export function Buildings() {
     // return () => {
     //   clearInterval(timer);
     // };
-  }, [target, originGPS, setTiles]);
+  }, [target, originGPS, updateData]);
 
   useFrame((_, delta) => {
     if (!groupRef.current) return;
