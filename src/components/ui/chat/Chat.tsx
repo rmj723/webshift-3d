@@ -9,7 +9,6 @@ type EntryType = { username: string; text: string; color: string };
 
 export default function chat() {
   const {
-    state,
     data: { ablyRealtime, name },
   } = useApp();
   const [entries, setEntries] = useState<EntryType[]>([]);
@@ -38,7 +37,6 @@ export default function chat() {
             text: text!,
             color: "#32a852",
           });
-
           editable.textContent = "";
         }
       };

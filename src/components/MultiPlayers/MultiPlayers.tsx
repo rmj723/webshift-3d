@@ -35,8 +35,8 @@ export const MultiPlayers = () => {
   const [, getKeyboardControls] = useKeyboardControls();
 
   useEffect(() => {
-    const tiles = { c: 12 };
-    if (Object.keys(tiles).length === 0) return;
+    // const tiles = { c: 12 };
+    if (!tiles) return;
     let timer = 0;
 
     (async () => {

@@ -1,10 +1,10 @@
 import React from "react";
-import { Box, Button, TextField, Typography } from "@mui/material";
+import { Button } from "@mui/material";
 import useApp from "../../store/useApp";
 import { Container, InputPanel } from "./login.style";
 
 export const Login = () => {
-  const [name, setName] = React.useState("");
+  const [name, setName] = React.useState("Y-Bot");
   const { updateData } = useApp();
 
   return (

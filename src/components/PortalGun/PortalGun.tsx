@@ -19,6 +19,7 @@ export const PortalGun: React.FC<Props> = ({ name, ...otherProps }) => {
 
   const [quat] = React.useState(new Quaternion());
 
+  // Attach bone to arm
   React.useEffect(() => {
     const { avatar } = state;
     boneRef.current = avatar.getObjectByName("mixamorigRightHand") as Bone;

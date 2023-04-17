@@ -42,7 +42,7 @@ const App = () => {
               { name: "jump", keys: ["Space"] },
             ]}
           >
-            <Player name={name} image="/images/joel.png" />
+            <Player name={name} image="/images/avatar.png" />
 
             <Canvas
               style={{
