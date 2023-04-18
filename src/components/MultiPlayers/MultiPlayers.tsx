@@ -8,6 +8,7 @@ import { useKeyboardControls } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { OtherPlayer } from "./OtherPlayer";
 import { TARGETS } from "../../utils/types";
+import { useAbly } from "./useAbly";
 
 type PlayerStateType = {
   position: THREE.Vector3;
@@ -15,6 +16,7 @@ type PlayerStateType = {
   animation: string;
   target: string;
   vehicleName: string;
+  timer?: number;
 };
 
 // number of players
@@ -25,35 +27,28 @@ let idleTimers: number[] = [];
 export const MultiPlayers = () => {
   const {
     state,
-    data: { tiles },
-    updateData,
+    data: { tiles, ablyRealtime },
   } = useApp();
+
+  useAbly();
+
   const [avatarIDs, setAvatarIDs] = React.useState<string[]>([]);
-
   const groupRef = React.useRef<THREE.Group>(null!);
-
   const [, getKeyboardControls] = useKeyboardControls();
 
   useEffect(() => {
-    // const tiles = { c: 12 };
-    if (!tiles) return;
+    if (!tiles || !ablyRealtime) return;
+
     let timer = 0;
 
-    (async () => {
-      const apiKey =
-        "ybyXHg.mHyTug:bycaIuavWh9GhIL9Q26dosOkpPNN7id5WmPlW1Kvb34";
-      const realtime = new Ably.Realtime.Promise(apiKey);
-      await realtime.connection.once("connected");
-      console.log("Connected to Ably!");
-      updateData({ ablyRealtime: realtime });
+    for (let i = 0; i < 9; ++i) {
+      const key = Object.keys(tiles)[i];
+      const value = tiles[key];
 
-      let i = 0;
-      for (let key in tiles) {
-        const value = tiles[key];
+      const channel = ablyRealtime.channels.get(value) as any;
 
-        const channel = realtime.channels.get(value);
-
-        await channel.subscribe((msg) => {
+      if (channel.subscriptions.any.length === 0) {
+        channel.subscribe((msg) => {
           const { id, playerState } = msg.data;
           const arr = playerState.split(",");
 
@@ -77,51 +72,50 @@ export const MultiPlayers = () => {
             playerStates[id].animation = "Idle";
           }, 500);
         });
-        ++i;
-
-        // only the current `tile channel` publish
-        if (key === "c") {
-          timer = window.setInterval(async () => {
-            const { forward, backward, leftward, rightward } =
-              getKeyboardControls();
-            const dirKeyPressed = [
-              forward,
-              backward,
-              leftward,
-              rightward,
-            ].includes(true);
-
-            const {
-              position,
-              rotation,
-              userData: { target, vehicleName },
-            } = state.avatar;
-
-            const vehicle =
-              target === TARGETS.VEHICLE ? state.vehicles[vehicleName] : null;
-
-            const convert = (s: Vector3 | Euler) =>
-              `${s.x.toFixed(2)},${s.y.toFixed(2)},${s.z.toFixed(2)}`;
-
-            if (dirKeyPressed) {
-              await channel.publish("update", {
-                id: state.playerID,
-                playerState: `${convert(
-                  vehicle ? vehicle.position : position
-                )},${convert(vehicle ? vehicle.rotation : rotation)},${
-                  state.avatarAnim
-                },${target},${vehicleName}`,
-              });
-            }
-          }, 100);
-        }
       }
-    })();
+
+      // only the current `tile channel` publish
+      if (key === "c") {
+        timer = window.setInterval(async () => {
+          const { forward, backward, leftward, rightward } =
+            getKeyboardControls();
+          const dirKeyPressed = [
+            forward,
+            backward,
+            leftward,
+            rightward,
+          ].includes(true);
+
+          const {
+            position,
+            rotation,
+            userData: { target, vehicleName },
+          } = state.avatar;
+
+          const vehicle =
+            target === TARGETS.VEHICLE ? state.vehicles[vehicleName] : null;
+
+          const convert = (s: Vector3 | Euler) =>
+            `${s.x.toFixed(2)},${s.y.toFixed(2)},${s.z.toFixed(2)}`;
+
+          if (dirKeyPressed) {
+            await channel.publish("update", {
+              id: state.playerID,
+              playerState: `${convert(
+                vehicle ? vehicle.position : position
+              )},${convert(vehicle ? vehicle.rotation : rotation)},${
+                state.avatarAnim
+              },${target},${vehicleName}`,
+            });
+          }
+        }, 100);
+      }
+    }
 
     return () => {
       clearInterval(timer);
     };
-  }, [state, tiles, setAvatarIDs]);
+  }, [state, ablyRealtime, tiles, setAvatarIDs]);
 
   useFrame(() => {
     if (!groupRef.current) return;
