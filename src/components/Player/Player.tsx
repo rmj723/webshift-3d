@@ -3,6 +3,7 @@ import * as THREE from "three";
 import { useAnimations, useGLTF } from "@react-three/drei";
 import useApp from "../../store/useApp";
 import { usePlayer } from "./usePlayer";
+import { TARGETS } from "../../utils/types";
 
 export function Player(props: JSX.IntrinsicElements["group"]) {
   const avatarRef = useRef<THREE.Group>(null!);
@@ -29,6 +30,7 @@ export function Player(props: JSX.IntrinsicElements["group"]) {
     );
     actions.idle!.play();
     state.avatar = avatarRef.current;
+    state.avatar.userData.target = TARGETS.AVATAR;
   }, [actions, state]);
 
   usePlayer({

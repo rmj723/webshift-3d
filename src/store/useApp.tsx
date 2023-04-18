@@ -3,11 +3,21 @@ import { OrbitControls } from "three/examples/jsm/controls/OrbitControls";
 import { subscribeWithSelector } from "zustand/middleware";
 import { Group, Mesh, PerspectiveCamera, Vector3 } from "three";
 import { GeolibInputCoordinates } from "geolib/es/types";
-import { TileType } from "../utils/types";
+import { TARGETS, TileType } from "../utils/types";
 import * as Ably from "ably";
 
+type DataType = {
+  ablyRealtime: Ably.Types.RealtimePromise;
+  loading: boolean;
+  name: string;
+  target: TARGETS;
+  originGPS: GeolibInputCoordinates;
+  tiles: TileType;
+  portalObject: Group | null;
+};
+
 export default create(
-  subscribeWithSelector((set: any) => {
+  subscribeWithSelector((set: any, get: any) => {
     return {
       state: {
         playerID: Math.random().toString(),
@@ -25,45 +35,14 @@ export default create(
         wallCollider: null! as Mesh,
       },
 
-      target: "avatar",
-      setTarget: (target: string) => {
+      data: {
+        loading: true,
+        target: TARGETS.AVATAR,
+        originGPS: [-73.9730278, 40.7636166] as GeolibInputCoordinates,
+      } as DataType,
+      updateData: (newItem: Partial<DataType>) => {
         set(() => {
-          return { target };
-        });
-      },
-
-      loading: false,
-      setLoading: (loading: boolean) => {
-        set(() => {
-          return { loading };
-        });
-      },
-
-      originGPS: [-73.9730278, 40.7636166] as GeolibInputCoordinates,
-      setOriginGPS: (originGPS: GeolibInputCoordinates) => {
-        set(() => {
-          return { originGPS };
-        });
-      },
-
-      portal: null! as Group,
-      setPortal: (portal: Group | null) => {
-        set(() => {
-          return { portal };
-        });
-      },
-
-      tiles: {} as TileType,
-      setTiles: (tiles: TileType) => {
-        set(() => {
-          return { tiles };
-        });
-      },
-
-      ablyRealtime: null! as Ably.Types.RealtimePromise,
-      setAblyRealtime: (ablyRealtime: Ably.Types.RealtimePromise) => {
-        set(() => {
-          return { ablyRealtime };
+          return { data: { ...get().data, ...newItem } };
         });
       },
     };

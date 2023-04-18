@@ -4,11 +4,14 @@ import ChatEntry from "./chat-entry";
 import "./chat.css";
 
 let msgCount = 0;
+
+type EntryType = { username: string; text: string; color: string };
+
 export default function chat() {
-  const { state, ablyRealtime } = useApp();
-  const [entries, setEntries] = useState<
-    { username: string; text: string; color: string }[]
-  >([]);
+  const {
+    data: { ablyRealtime, name },
+  } = useApp();
+  const [entries, setEntries] = useState<EntryType[]>([]);
 
   useEffect(() => {
     if (!ablyRealtime) return;
@@ -30,11 +33,10 @@ export default function chat() {
           let text = editable.textContent;
 
           await channel.publish("update", {
-            username: state.playerID,
+            username: name,
             text: text!,
             color: "#32a852",
           });
-
           editable.textContent = "";
         }
       };
@@ -45,7 +47,7 @@ export default function chat() {
         editable.removeEventListener("keypress", onKeyDown);
       };
     })();
-  }, [ablyRealtime]);
+  }, [ablyRealtime, name]);
 
   return (
     <div className="chat-main-wrapper">

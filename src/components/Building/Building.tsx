@@ -8,7 +8,7 @@ import React, {
 import { extend, useFrame } from "@react-three/fiber";
 import { GeolibInputCoordinates } from "geolib/es/types";
 import { load } from "../../utils/TileSystem/TileSystem";
-import { DoubleSide, Group } from "three";
+import { DoubleSide, Group, StencilOp } from "three";
 import useApp from "../../store/useApp";
 import { posToGps } from "../../utils/posToGps";
 import { WaterMaterial } from "../Materials/WaterMaterial";
@@ -17,17 +17,20 @@ import { createGeometry, scale } from "./Building.Utils";
 import { InstancedTrees } from "./InstancedTrees";
 import { useWorker } from "./Building.hooks";
 import { TileType } from "../../utils/types";
-import { sampleTiles } from "./sampleTiles";
 extend({ WaterMaterial });
 
 let allFeatures: any[] = [];
 let previewTiles: TileType[] = [];
+
 export function Buildings() {
   const { materials } = useMaterials();
   const groupRef = useRef<Group>(null!);
 
-  const { target, state, loading, setLoading, originGPS, tiles, setTiles } =
-    useApp();
+  const {
+    data: { target, loading, originGPS, tiles },
+    state,
+    updateData,
+  } = useApp();
 
   const { worker } = useWorker();
   const [geos, setGeos] = useState<any>();
@@ -35,48 +38,51 @@ export function Buildings() {
   const createBuildings = useCallback(() => {
     worker.convertFeaturesToGeos(allFeatures, originGPS).then((result) => {
       setGeos(result);
-      if (loading) setLoading(false);
+      if (loading) updateData({ loading: false });
     });
-  }, [originGPS, loading, setLoading]);
+  }, [originGPS, loading, updateData]);
 
   useEffect(() => {
-    allFeatures = sampleTiles;
-    createBuildings();
+    if (window.location.href.includes("localhost")) {
+      updateData({ loading: false });
+    }
 
-    // const timer = window.setInterval(() => {
-    //   if (!state.avatar) return;
+    const timer = window.setInterval(() => {
+      if (!state.avatar) return;
 
-    //   const { avatar, vehicle } = state;
-    //   const pos = target === "avatar" ? avatar.position : vehicle.position;
-    //   const { x, z } = pos;
+      const { avatar, vehicles } = state;
+      const pos =
+        target === "avatar"
+          ? avatar.position
+          : vehicles[avatar.userData.vehicleName].position;
+      const { x, z } = pos;
 
-    //   const gps = posToGps([x / scale, -z / scale], originGPS);
-    //   load(
-    //     gps,
-    //     6,
-    //     ({ features }, neighborsHashes) => {
-    //       allFeatures = [...allFeatures, ...features];
-    //       console.log("all", JSON.stringify(allFeatures));
-    //       createBuildings();
-    //       if (previewTiles !== neighborsHashes) {
-    //         setTiles(neighborsHashes);
-    //         previewTiles = neighborsHashes;
-    //       }
-    //     },
-    //     state.geohashToFeatureId,
-    //     state.featureToGeoHash,
-    //     (ids) => {
-    //       worker.removeFeatures(allFeatures, ids).then((filteredFeatures) => {
-    //         allFeatures = filteredFeatures;
-    //       });
-    //     }
-    //   );
-    // }, 2000);
+      const gps = posToGps([x / scale, -z / scale], originGPS);
+      load(
+        gps,
+        6,
+        ({ features }, neighborsHashes) => {
+          allFeatures = [...allFeatures, ...features];
+          createBuildings();
+          if (previewTiles !== neighborsHashes) {
+            updateData({ tiles: neighborsHashes });
+            previewTiles = neighborsHashes;
+          }
+        },
+        state.geohashToFeatureId,
+        state.featureToGeoHash,
+        (ids) => {
+          worker.removeFeatures(allFeatures, ids).then((filteredFeatures) => {
+            allFeatures = filteredFeatures;
+          });
+        }
+      );
+    }, 2000);
 
-    // return () => {
-    //   clearInterval(timer);
-    // };
-  }, [target, originGPS, setTiles]);
+    return () => {
+      clearInterval(timer);
+    };
+  }, [target, originGPS, updateData]);
 
   useFrame((_, delta) => {
     if (!groupRef.current) return;

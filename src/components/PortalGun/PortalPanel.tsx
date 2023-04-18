@@ -37,7 +37,7 @@ const InputPanel = styled.div`
 `;
 
 export const PortalPanel = () => {
-  const { setOriginGPS, setLoading, setPortal } = useApp();
+  const { updateData } = useApp();
   const [showInput, setShowInput] = React.useState(false);
   // 34.213372, -118.589609
   // 40.7636166 -73.9730278
@@ -113,9 +113,11 @@ export const PortalPanel = () => {
               variant="contained"
               onClick={() => {
                 setShowInput(false);
-                setOriginGPS([long, lat] as GeolibInputCoordinates);
-                setLoading(true);
-                setPortal(null);
+                updateData({
+                  loading: true,
+                  originGPS: [long, lat] as GeolibInputCoordinates,
+                  portalObject: null,
+                });
               }}
             >
               Teleport

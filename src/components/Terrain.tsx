@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useFrame, useLoader } from "@react-three/fiber";
 import { RepeatWrapping, TextureLoader, Vector2 } from "three";
 import useApp from "../store/useApp";
+import { TARGETS } from "../utils/types";
 
 const length = 2000;
 let x_id = 0;
@@ -13,14 +14,17 @@ export function Terrain() {
   groundMap.repeat.set(30, 30);
 
   const [center, setCenter] = useState(new Vector2(0, 0));
-  const { target, state } = useApp();
+  const {
+    data: { target },
+    state,
+  } = useApp();
 
   useFrame(() => {
     if (!state.avatar) return;
 
     const { avatar, vehicles } = state;
     const pos =
-      target === "avatar"
+      target === TARGETS.AVATAR
         ? avatar.position
         : vehicles[avatar.userData.vehicleName].position;
     const { x, z } = pos;

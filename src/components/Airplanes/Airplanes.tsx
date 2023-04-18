@@ -3,17 +3,21 @@ import React, { useRef } from "react";
 import { Group } from "three";
 import useApp from "../../store/useApp";
 import { Airplane } from "./Airplane";
+import { TARGETS } from "../../utils/types";
 
 export const Airplanes = () => {
   const groupRef = useRef<Group>(null!);
-  const { target, state } = useApp();
+  const {
+    data: { target },
+    state,
+  } = useApp();
 
   useFrame(() => {
     if (!state.avatar || !groupRef.current) return;
 
     const { avatar, vehicles } = state;
     const pos =
-      target === "avatar"
+      target === TARGETS.AVATAR
         ? avatar.position
         : vehicles[avatar.userData.vehicleName].position;
     const { x, z } = pos;

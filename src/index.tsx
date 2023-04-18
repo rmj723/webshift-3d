@@ -12,59 +12,69 @@ import Chat from "./components/ui/chat/Chat";
 import Inventory from "./components/ui/Inventory/Inventory";
 import { Loading } from "./components/Loading/Loading";
 import { PortalPanel } from "./components/PortalGun/PortalPanel";
+import { Login } from "./components/Login/login";
 
 const App = () => {
-  const { state, loading, portal } = useApp();
+  const {
+    state,
+    data: { loading, name, portalObject },
+  } = useApp();
+
   return (
     <>
-      <Chat />
+      {!name ? (
+        <Login />
+      ) : (
+        <>
+          <Chat />
+          <Inventory />
 
-      {portal && <PortalPanel />}
+          {portalObject && <PortalPanel />}
 
-      <Inventory />
-      {loading && <Loading />}
+          {loading && <Loading />}
+          <KeyboardControls
+            map={[
+              { name: "forward", keys: ["ArrowUp", "KeyW"] },
+              { name: "backward", keys: ["ArrowDown", "KeyS"] },
+              { name: "leftward", keys: ["ArrowLeft", "KeyA"] },
+              { name: "rightward", keys: ["ArrowRight", "KeyD"] },
+              { name: "run", keys: ["Shift"] },
+              { name: "jump", keys: ["Space"] },
+            ]}
+          >
+            <Player name={name} image="/images/avatar.png" />
 
-      <KeyboardControls
-        map={[
-          { name: "forward", keys: ["ArrowUp", "KeyW"] },
-          { name: "backward", keys: ["ArrowDown", "KeyS"] },
-          { name: "leftward", keys: ["ArrowLeft", "KeyA"] },
-          { name: "rightward", keys: ["ArrowRight", "KeyD"] },
-          { name: "run", keys: ["Shift"] },
-          { name: "jump", keys: ["Space"] },
-        ]}
-      >
-        <Player name={"Joel Green"} image="/images/joel.png" />
+            <Canvas
+              style={{
+                position: "absolute",
+                top: "0",
+                left: "0",
+                width: "100%",
+                height: "100%",
+              }}
+              shadows
+              camera={{
+                fov: 45,
+                near: 0.1,
+                far: 10000,
+                position: [5, 4, -10],
+              }}
+              onPointerDown={(e) => {
+                if (e.button === 2) state.panning = true;
+              }}
+            >
+              <Scene />
 
-        <Canvas
-          style={{
-            position: "absolute",
-            top: "0",
-            left: "0",
-            width: "100%",
-            height: "100%",
-          }}
-          shadows
-          camera={{
-            fov: 45,
-            near: 0.1,
-            far: 10000,
-            position: [5, 4, -10],
-          }}
-          onPointerDown={(e) => {
-            if (e.button === 2) state.panning = true;
-          }}
-        >
-          <Scene />
-
-          {window.location.href.includes("localhost") && (
-            <>
-              <Perf position="bottom-right" />
-              <SceneExporter />
-            </>
-          )}
-        </Canvas>
-      </KeyboardControls>
+              {window.location.href.includes("localhost") && (
+                <>
+                  <Perf position="bottom-right" />
+                  <SceneExporter />
+                </>
+              )}
+            </Canvas>
+          </KeyboardControls>
+        </>
+      )}
     </>
   );
 };

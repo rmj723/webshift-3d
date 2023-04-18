@@ -9,27 +9,32 @@ interface Props extends GroupProps {
 export const PortalGun: React.FC<Props> = ({ name, ...otherProps }) => {
   const groupRef = React.useRef<Group>(null!);
 
-  const { state, portal, setPortal } = useApp();
+  const {
+    state,
+    data: { portalObject },
+    updateData,
+  } = useApp();
   const boneRef = React.useRef<Bone>(null!);
   const [pos] = React.useState(new Vector3(0, 0, 0));
 
   const [quat] = React.useState(new Quaternion());
 
+  // Attach bone to arm
   React.useEffect(() => {
     const { avatar } = state;
     boneRef.current = avatar.getObjectByName("mixamorigRightHand") as Bone;
 
-    if (portal === null) {
+    if (portalObject === null) {
       const { position, rotation } = otherProps;
       position &&
         groupRef.current.position.set(position[0], position[1], position[2]);
       rotation &&
         groupRef.current.rotation.set(rotation[0], rotation[1], rotation[2]);
     }
-  }, [state, portal, otherProps]);
+  }, [state, portalObject, otherProps]);
 
   useFrame(() => {
-    if (boneRef.current && portal === groupRef.current) {
+    if (boneRef.current && portalObject === groupRef.current) {
       boneRef.current.getWorldPosition(pos);
       boneRef.current.getWorldQuaternion(quat);
       groupRef.current.position.copy(pos);
@@ -41,7 +46,7 @@ export const PortalGun: React.FC<Props> = ({ name, ...otherProps }) => {
     <group ref={groupRef} {...otherProps}>
       <mesh
         onDoubleClick={() => {
-          setPortal(groupRef.current);
+          updateData({ portalObject: groupRef.current });
         }}
       >
         <sphereGeometry args={[0.1]} />

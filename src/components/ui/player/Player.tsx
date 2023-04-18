@@ -20,8 +20,8 @@ export default function Player({ name, image }: playerProps) {
       <div className="player-stats-container">
         <h1 className="player-name-h1">{name}</h1>
 
-        <StatBar name={"Health"} color={"#f43855"} max={10} current={4} />
-        <StatBar name={"Exp"} color={"#42e6ff"} max={100} current={76} />
+        <StatBar name={"Health"} color={"#f43855"} max={10} current={10} />
+        <StatBar name={"Exp"} color={"#42e6ff"} max={100} current={0} />
       </div>
     </div>
   );

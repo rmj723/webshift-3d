@@ -7,3 +7,8 @@ export interface PlayerType {
 export type TileType = {
   [key in "c" | "e" | "n" | "ne" | "nw" | "s" | "se" | "sw" | "w"]: string;
 };
+
+export enum TARGETS {
+  AVATAR = "avatar",
+  VEHICLE = "vehicle",
+}
