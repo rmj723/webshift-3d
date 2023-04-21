@@ -10,6 +10,7 @@ type DataType = {
   ablyRealtime: Ably.Types.RealtimePromise;
   loading: boolean;
   name: string;
+  message: string;
   target: TARGETS;
   originGPS: GeolibInputCoordinates;
   tiles: TileType;

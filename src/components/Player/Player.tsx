@@ -1,14 +1,18 @@
 import React, { useRef, useState, useEffect } from "react";
 import * as THREE from "three";
-import { useAnimations, useGLTF } from "@react-three/drei";
+import { Html, useAnimations, useGLTF } from "@react-three/drei";
 import useApp from "../../store/useApp";
 import { usePlayer } from "./usePlayer";
 import { TARGETS } from "../../utils/types";
+import { ChatPanel } from "./ChatPanel";
 
 export function Player(props: JSX.IntrinsicElements["group"]) {
   const avatarRef = useRef<THREE.Group>(null!);
 
-  const { state } = useApp();
+  const {
+    state,
+    data: { name },
+  } = useApp();
   const { nodes, materials, animations }: any = useGLTF(
     "./models/ybot-transformed.glb"
   );
@@ -40,6 +44,9 @@ export function Player(props: JSX.IntrinsicElements["group"]) {
 
   return (
     <group ref={avatarRef} dispose={null} {...props}>
+      <Html style={{ width: "100px", color: "white" }}>{name}</Html>
+      <ChatPanel />
+
       <mesh name="collision-detector" position={[0, -1, -0.8]}>
         <sphereGeometry args={[0.05]} />
       </mesh>

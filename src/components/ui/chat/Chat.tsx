@@ -10,6 +10,7 @@ type EntryType = { username: string; text: string; color: string };
 export default function chat() {
   const {
     data: { ablyRealtime, name },
+    updateData,
   } = useApp();
   const [entries, setEntries] = useState<EntryType[]>([]);
 
@@ -38,6 +39,7 @@ export default function chat() {
             color: "#32a852",
           });
           editable.textContent = "";
+          updateData({ message: text! });
         }
       };
 
@@ -47,7 +49,7 @@ export default function chat() {
         editable.removeEventListener("keypress", onKeyDown);
       };
     })();
-  }, [ablyRealtime, name]);
+  }, [ablyRealtime, name, updateData]);
 
   return (
     <div className="chat-main-wrapper">
