@@ -5,11 +5,12 @@ import "./chat.css";
 
 let msgCount = 0;
 
-type EntryType = { username: string; text: string; color: string };
+type EntryType = { id: string; username: string; text: string; color: string };
 
 export default function chat() {
   const {
-    data: { ablyRealtime, name },
+    state,
+    data: { ablyRealtime },
     updateData,
   } = useApp();
   const [entries, setEntries] = useState<EntryType[]>([]);
@@ -19,10 +20,16 @@ export default function chat() {
 
     (async () => {
       const channel = ablyRealtime.channels.get("chat");
-      await channel.subscribe((msg) => {
+
+      await channel.subscribe((msg: { data: EntryType }) => {
         msg.data.color = msgCount % 2 ? "#32a852" : "#7f32a8";
         setEntries((current) => [...current, msg.data]);
         ++msgCount;
+
+        let newMsg = {};
+        newMsg[`${msg.data.id}`] = msg.data.text;
+        state.messages = { ...state.messages, ...newMsg };
+        updateData({ messages: state.messages });
       });
 
       const editable = window.document.querySelector(".input-entry")!;
@@ -33,13 +40,14 @@ export default function chat() {
         if (key === "Enter") {
           let text = editable.textContent;
 
+          const { avatarID, avatarName } = state;
           await channel.publish("update", {
-            username: name,
+            id: avatarID,
+            username: avatarName,
             text: text!,
             color: "#32a852",
           });
           editable.textContent = "";
-          updateData({ message: text! });
         }
       };
 
@@ -49,7 +57,7 @@ export default function chat() {
         editable.removeEventListener("keypress", onKeyDown);
       };
     })();
-  }, [ablyRealtime, name, updateData]);
+  }, [ablyRealtime, state, updateData]);
 
   return (
     <div className="chat-main-wrapper">

@@ -1,5 +1,5 @@
 import { GeolibInputCoordinates } from "geolib/es/types";
-
+import { scale } from "../components/Building/Building.Utils";
 export const EARTH_RADIUS = 6378137; // in meters
 
 export function gpsToPos(
@@ -19,5 +19,5 @@ export function gpsToPos(
         Math.tan(Math.PI / 4 + (originLat * Math.PI) / 360)
     );
 
-  return [-x / 100, y / 100];
+  return [-x / scale, y / scale];
 }

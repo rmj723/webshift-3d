@@ -9,8 +9,8 @@ import * as Ably from "ably";
 type DataType = {
   ablyRealtime: Ably.Types.RealtimePromise;
   loading: boolean;
-  name: string;
-  message: string;
+  authenticated: boolean;
+  messages: {};
   target: TARGETS;
   originGPS: GeolibInputCoordinates;
   tiles: TileType;
@@ -21,7 +21,10 @@ export default create(
   subscribeWithSelector((set: any, get: any) => {
     return {
       state: {
-        playerID: Math.random().toString(),
+        avatarID: Math.random().toString(),
+        avatarName: "YBot",
+        originGPS: [-73.9730278, 40.7636166] as GeolibInputCoordinates,
+        messages: {},
         orbit: null! as OrbitControls,
         camera: null! as PerspectiveCamera,
         panning: false,
@@ -37,8 +40,10 @@ export default create(
       },
 
       data: {
-        loading: true,
+        authenticated: false, // false,
+        loading: true, //true,
         target: TARGETS.AVATAR,
+        messages: {},
         originGPS: [-73.9730278, 40.7636166] as GeolibInputCoordinates,
       } as DataType,
       updateData: (newItem: Partial<DataType>) => {

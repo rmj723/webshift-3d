@@ -5,12 +5,22 @@ import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 import * as SkeletonUtils from "three/examples/jsm/utils/SkeletonUtils";
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import useApp from "../../store/useApp";
+import { ChatBubble } from "../ChatBubble/ChatBubble";
+import { Html } from "@react-three/drei";
+import { TARGETS } from "../../utils/types";
 
 interface Props extends GroupProps {
-  name: string;
+  avatarID: string;
+  avatarName: string;
+  target: string;
 }
 
-export const OtherPlayer: React.FC<Props> = ({ name, ...rest }) => {
+export const OtherPlayer: React.FC<Props> = ({
+  avatarID,
+  avatarName,
+  target,
+  ...rest
+}) => {
   const gltf = useLoader(
     GLTFLoader,
     "./models/ybot-transformed.glb",
@@ -20,7 +30,10 @@ export const OtherPlayer: React.FC<Props> = ({ name, ...rest }) => {
       loader.setDRACOLoader(dracoLoader);
     }
   );
-  const { state } = useApp();
+  const {
+    state,
+    data: { messages },
+  } = useApp();
   const group = useRef<THREE.Group>(null!);
   const mixer = useRef<THREE.AnimationMixer>(null!);
   const action = useRef<THREE.AnimationAction>(null!);
@@ -68,5 +81,24 @@ export const OtherPlayer: React.FC<Props> = ({ name, ...rest }) => {
     mixer.current.update(delta);
   });
 
-  return <group name={name} ref={group} {...rest} />;
+  return (
+    <group name={avatarID} ref={group} {...rest}>
+      {target === TARGETS.AVATAR && (
+        <Html
+          style={{
+            width: "100px",
+            color: "#00ff00",
+            fontSize: "20px",
+            textAlign: "center",
+          }}
+          position-y={2}
+          center
+        >
+          {avatarName}
+        </Html>
+      )}
+
+      {<ChatBubble msg={messages[avatarID]} />}
+    </group>
+  );
 };

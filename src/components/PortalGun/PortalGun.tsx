@@ -2,6 +2,7 @@ import React from "react";
 import { Bone, Group, Quaternion, Vector3 } from "three";
 import useApp from "../../store/useApp";
 import { GroupProps, useFrame } from "@react-three/fiber";
+import { PortalGunModel } from "./PortalGunModel";
 
 interface Props extends GroupProps {
   name?: string;
@@ -14,9 +15,9 @@ export const PortalGun: React.FC<Props> = ({ name, ...otherProps }) => {
     data: { portalObject },
     updateData,
   } = useApp();
+
   const boneRef = React.useRef<Bone>(null!);
   const [pos] = React.useState(new Vector3(0, 0, 0));
-
   const [quat] = React.useState(new Quaternion());
 
   // Attach bone to arm
@@ -44,14 +45,15 @@ export const PortalGun: React.FC<Props> = ({ name, ...otherProps }) => {
 
   return (
     <group ref={groupRef} {...otherProps}>
-      <mesh
+      <PortalGunModel
+        scale={0.4}
+        rotation-y={-0.8}
+        rotation-x={0.2}
+        rotation-z={1.5}
         onDoubleClick={() => {
           updateData({ portalObject: groupRef.current });
         }}
-      >
-        <sphereGeometry args={[0.1]} />
-        <meshBasicMaterial color="yellow" />
-      </mesh>
+      />
     </group>
   );
 };

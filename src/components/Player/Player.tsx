@@ -4,14 +4,14 @@ import { Html, useAnimations, useGLTF } from "@react-three/drei";
 import useApp from "../../store/useApp";
 import { usePlayer } from "./usePlayer";
 import { TARGETS } from "../../utils/types";
-import { ChatPanel } from "./ChatPanel";
+import { ChatBubble } from "../ChatBubble/ChatBubble";
 
 export function Player(props: JSX.IntrinsicElements["group"]) {
   const avatarRef = useRef<THREE.Group>(null!);
 
   const {
     state,
-    data: { name },
+    data: { messages, target },
   } = useApp();
   const { nodes, materials, animations }: any = useGLTF(
     "./models/ybot-transformed.glb"
@@ -44,8 +44,22 @@ export function Player(props: JSX.IntrinsicElements["group"]) {
 
   return (
     <group ref={avatarRef} dispose={null} {...props}>
-      <Html style={{ width: "100px", color: "white" }}>{name}</Html>
-      <ChatPanel />
+      {target === TARGETS.AVATAR && (
+        <Html
+          style={{
+            width: "100px",
+            color: "#00ff00",
+            fontSize: "20px",
+            textAlign: "center",
+          }}
+          position-y={2}
+          center
+        >
+          {state.avatarName}
+        </Html>
+      )}
+
+      <ChatBubble msg={messages[state.avatarID]} />
 
       <mesh name="collision-detector" position={[0, -1, -0.8]}>
         <sphereGeometry args={[0.05]} />

@@ -43,10 +43,6 @@ export function Buildings() {
   }, [originGPS, loading, updateData]);
 
   useEffect(() => {
-    if (window.location.href.includes("localhost")) {
-      updateData({ loading: false });
-    }
-
     const timer = window.setInterval(() => {
       if (!state.avatar) return;
 

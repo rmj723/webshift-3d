@@ -5,7 +5,7 @@ import { Container, InputPanel } from "./login.style";
 
 export const Login = () => {
   const [name, setName] = React.useState("Y-Bot");
-  const { updateData } = useApp();
+  const { state, updateData } = useApp();
 
   return (
     <Container>
@@ -24,7 +24,10 @@ export const Login = () => {
           variant="contained"
           fullWidth
           onClick={() => {
-            if (name !== "") updateData({ name });
+            if (name !== "") {
+              updateData({ authenticated: true });
+              state.avatarName = name;
+            }
           }}
         >
           Enter

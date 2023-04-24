@@ -37,7 +37,7 @@ const InputPanel = styled.div`
 `;
 
 export const PortalPanel = () => {
-  const { updateData } = useApp();
+  const { state, updateData } = useApp();
   const [showInput, setShowInput] = React.useState(false);
   // 34.213372, -118.589609
   // 40.7636166 -73.9730278
@@ -113,9 +113,10 @@ export const PortalPanel = () => {
               variant="contained"
               onClick={() => {
                 setShowInput(false);
+                state.originGPS = [long, lat] as GeolibInputCoordinates;
                 updateData({
                   loading: true,
-                  originGPS: [long, lat] as GeolibInputCoordinates,
+                  originGPS: state.originGPS,
                   portalObject: null,
                 });
               }}

@@ -17,12 +17,12 @@ import { Login } from "./components/Login/login";
 const App = () => {
   const {
     state,
-    data: { loading, name, portalObject },
+    data: { loading, authenticated, portalObject },
   } = useApp();
 
   return (
     <>
-      {!name ? (
+      {!authenticated ? (
         <Login />
       ) : (
         <>
@@ -42,7 +42,7 @@ const App = () => {
               { name: "jump", keys: ["Space"] },
             ]}
           >
-            <Player name={name} image="/images/avatar.png" />
+            <Player image="/images/avatar.png" />
 
             <Canvas
               style={{
