@@ -5,16 +5,18 @@ import useApp from "../../store/useApp";
 import { usePlayer } from "./usePlayer";
 import { TARGETS } from "../../utils/types";
 import { ChatBubble } from "../ChatBubble/ChatBubble";
+import { Players } from "./Players";
 
 export function Player(props: JSX.IntrinsicElements["group"]) {
   const avatarRef = useRef<THREE.Group>(null!);
 
   const {
     state,
-    data: { messages, target },
+    data: { messages, target, avatarType },
   } = useApp();
+
   const { nodes, materials, animations }: any = useGLTF(
-    "./models/ybot-transformed.glb"
+    Players[avatarType].url
   );
 
   const { actions } = useAnimations(animations, avatarRef);
@@ -33,8 +35,9 @@ export function Player(props: JSX.IntrinsicElements["group"]) {
       ])
     );
     actions.idle!.play();
+
     state.avatar = avatarRef.current;
-    state.avatar.userData.target = TARGETS.AVATAR;
+    state.target = TARGETS.AVATAR;
   }, [actions, state]);
 
   usePlayer({
@@ -45,18 +48,19 @@ export function Player(props: JSX.IntrinsicElements["group"]) {
   return (
     <group ref={avatarRef} dispose={null} {...props}>
       {target === TARGETS.AVATAR && (
-        <Html
-          style={{
-            width: "100px",
-            color: "#00ff00",
-            fontSize: "20px",
-            textAlign: "center",
-          }}
-          position-y={2}
-          center
-        >
-          {state.avatarName}
-        </Html>
+        <group position-y={2}>
+          <Html
+            style={{
+              width: "100px",
+              color: "#00ff00",
+              fontSize: "20px",
+              textAlign: "center",
+            }}
+            center
+          >
+            {state.avatarName}
+          </Html>
+        </group>
       )}
 
       <ChatBubble msg={messages[state.avatarID]} />
@@ -64,25 +68,8 @@ export function Player(props: JSX.IntrinsicElements["group"]) {
       <mesh name="collision-detector" position={[0, -1, -0.8]}>
         <sphereGeometry args={[0.05]} />
       </mesh>
-      <group name="Scene" rotation-y={Math.PI}>
-        <group name="Armature" rotation={[Math.PI / 2, 0, 0]} scale={0.01}>
-          <primitive object={nodes.mixamorigHips} />
-          <skinnedMesh
-            name="Alpha_Joints"
-            geometry={nodes.Alpha_Joints.geometry}
-            material={materials.Alpha_Joints_MAT}
-            skeleton={nodes.Alpha_Joints.skeleton}
-          />
-          <skinnedMesh
-            name="Alpha_Surface"
-            geometry={nodes.Alpha_Surface.geometry}
-            material={materials.Alpha_Body_MAT}
-            skeleton={nodes.Alpha_Surface.skeleton}
-          />
-        </group>
-      </group>
+
+      {Players[avatarType].getAvatar(nodes, materials)}
     </group>
   );
 }
-
-useGLTF.preload("./models/ybot-transformed.glb");

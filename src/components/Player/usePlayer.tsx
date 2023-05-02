@@ -150,7 +150,7 @@ export function usePlayer({
       if (!state.panning) {
         state.orbit.target.set(
           avatar.position.x,
-          avatar.position.y,
+          avatar.position.y + 1,
           avatar.position.z
         );
       }

@@ -3,6 +3,7 @@ import * as THREE from "three";
 import { useKeyboardControls } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import useApp from "../../store/useApp";
+import { TARGETS } from "../../utils/types";
 
 let maxSpeed = 0;
 
@@ -33,9 +34,9 @@ export function useVehicle(
   );
 
   useEffect(() => {
-    const { vehicles, orbit, avatar } = state;
-    if (!orbit || target !== "vehicle") return;
-    const vehicle = vehicles[avatar.userData.vehicleName];
+    const { vehicles, orbit, vehicleName } = state;
+    if (!orbit || target !== TARGETS.VEHICLE) return;
+    const vehicle = vehicles[vehicleName];
     vehicleRot.setFromEuler(vehicle.rotation);
     vehiclePos.copy(vehicle.position);
 
@@ -54,19 +55,17 @@ export function useVehicle(
       !vehicleRef.current ||
       !frontWheelRef.current ||
       !backWheelRef.current ||
-      target !== "vehicle"
+      target !== TARGETS.VEHICLE
     )
       return;
-
-    const { avatar, vehicles } = state;
-    const vehicle = vehicles[avatar.userData.vehicleName];
+    const { vehicles, vehicleName } = state;
+    const vehicle = vehicles[vehicleName];
 
     if (vehicle !== vehicleRef.current) return;
 
     acceleration.set(0, 0, 0);
 
-    const { forward, backward, leftward, rightward, run } =
-      getKeyboardControls();
+    const { forward, backward, leftward, rightward } = getKeyboardControls();
 
     const dirKeyPressed = [forward, backward, leftward, rightward].includes(
       true

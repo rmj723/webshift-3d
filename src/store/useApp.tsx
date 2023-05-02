@@ -7,6 +7,7 @@ import { TARGETS, TileType } from "../utils/types";
 import * as Ably from "ably";
 
 type DataType = {
+  avatarType: string;
   ablyRealtime: Ably.Types.RealtimePromise;
   loading: boolean;
   authenticated: boolean;
@@ -21,25 +22,35 @@ export default create(
   subscribeWithSelector((set: any, get: any) => {
     return {
       state: {
+        target: TARGETS.AVATAR,
+
         avatarID: Math.random().toString(),
         avatarName: "YBot",
+        avatarType: "aj",
+        avatarAnim: "Idle",
+        avatar: null! as Group,
+
+        vehicles: {} as { [key: string]: Group },
+        vehicleName: "",
+
         originGPS: [-73.9730278, 40.7636166] as GeolibInputCoordinates,
+        geohashToFeatureId: new Map(),
+        featureToGeoHash: new Map(),
+
         messages: {},
+
         orbit: null! as OrbitControls,
         camera: null! as PerspectiveCamera,
         panning: false,
         cameraPosOffset: new Vector3(),
-        avatar: null! as Group,
-        avatarAnim: "Idle",
-        vehicles: {} as { [key: string]: Group },
-        geohashToFeatureId: new Map(),
-        featureToGeoHash: new Map(),
+
         staticColliders: [] as Mesh[],
         buildingCollider: null! as Mesh,
         wallCollider: null! as Mesh,
       },
 
       data: {
+        avatarType: "aj",
         authenticated: false, // false,
         loading: true, //true,
         target: TARGETS.AVATAR,

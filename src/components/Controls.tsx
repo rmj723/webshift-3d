@@ -29,7 +29,7 @@ export const Controls = () => {
       zoomSpeed={2}
       enableDamping={false}
       screenSpacePanning={false}
-      minDistance={4}
+      minDistance={8}
       maxDistance={window.location.href.includes("localhost") ? 2000 : 500}
       mouseButtons={{
         LEFT: THREE.MOUSE.ROTATE,

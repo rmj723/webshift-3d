@@ -5,7 +5,11 @@ import { Container, InputPanel } from "./login.style";
 
 export const Login = () => {
   const [name, setName] = React.useState("Y-Bot");
-  const { state, updateData } = useApp();
+  const {
+    state,
+    data: { avatarType },
+    updateData,
+  } = useApp();
 
   return (
     <Container>
@@ -19,6 +23,20 @@ export const Login = () => {
             setName(e.target.value);
           }}
         />
+
+        <p>Select Avatar</p>
+
+        <select
+          value={avatarType}
+          onChange={(e) => {
+            updateData({ avatarType: e.target.value });
+            state.avatarType = e.target.value;
+          }}
+        >
+          <option value="aj">AJ</option>
+          <option value="ybot">YBot</option>
+          <option value="amy">Amy</option>
+        </select>
 
         <Button
           variant="contained"

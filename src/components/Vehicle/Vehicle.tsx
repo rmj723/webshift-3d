@@ -36,8 +36,10 @@ export function Vehicle({ vehicleName, ...otherProps }: Props) {
     if (target === TARGETS.AVATAR) {
       /// get on a car
       avatar.visible = false;
-      avatar.userData = { vehicleName, target: TARGETS.VEHICLE };
       updateData({ target: TARGETS.VEHICLE });
+
+      state.vehicleName = vehicleName;
+      state.target = TARGETS.VEHICLE;
       state.panning = false;
     } else {
       // get off a car
@@ -45,8 +47,10 @@ export function Vehicle({ vehicleName, ...otherProps }: Props) {
       avatar.position.x = pos.x + 2;
       avatar.position.z = pos.z + 2;
       avatar.visible = true;
+
       updateData({ target: TARGETS.AVATAR });
-      avatar.userData.target = TARGETS.AVATAR;
+
+      state.target = TARGETS.AVATAR;
       state.panning = false;
     }
   };

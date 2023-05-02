@@ -35,9 +35,9 @@ export const ChatBubble: React.FC<Props> = ({ msg, ...otherProps }) => {
   if (!msg) return <></>;
 
   return (
-    <group {...otherProps}>
-      {true && (
-        <Html position={[-0.2, 3, 0]} center>
+    <group position-y={2.4} {...otherProps}>
+      {visible && (
+        <Html position={[-0.2, 0, 0]} center>
           <ChatBox>{msg} </ChatBox>
         </Html>
       )}

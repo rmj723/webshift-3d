@@ -17,7 +17,7 @@ import { Login } from "./components/Login/login";
 const App = () => {
   const {
     state,
-    data: { loading, authenticated, portalObject },
+    data: { loading, authenticated, portalObject, avatarType },
   } = useApp();
 
   return (
@@ -42,7 +42,7 @@ const App = () => {
               { name: "jump", keys: ["Space"] },
             ]}
           >
-            <Player image="/images/avatar.png" />
+            <Player image={`/images/${avatarType}.png`} />
 
             <Canvas
               style={{

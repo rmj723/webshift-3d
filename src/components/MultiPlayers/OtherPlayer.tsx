@@ -8,28 +8,27 @@ import useApp from "../../store/useApp";
 import { ChatBubble } from "../ChatBubble/ChatBubble";
 import { Html } from "@react-three/drei";
 import { TARGETS } from "../../utils/types";
+import { Players } from "../Player/Players";
 
 interface Props extends GroupProps {
   avatarID: string;
   avatarName: string;
+  avatarType: string;
   target: string;
 }
 
 export const OtherPlayer: React.FC<Props> = ({
   avatarID,
   avatarName,
+  avatarType,
   target,
   ...rest
 }) => {
-  const gltf = useLoader(
-    GLTFLoader,
-    "./models/ybot-transformed.glb",
-    (loader) => {
-      const dracoLoader = new DRACOLoader();
-      dracoLoader.setDecoderPath("/draco/gltf/");
-      loader.setDRACOLoader(dracoLoader);
-    }
-  );
+  const gltf = useLoader(GLTFLoader, Players[avatarType].url, (loader) => {
+    const dracoLoader = new DRACOLoader();
+    dracoLoader.setDecoderPath("/draco/gltf/");
+    loader.setDRACOLoader(dracoLoader);
+  });
   const {
     state,
     data: { messages },
@@ -39,7 +38,7 @@ export const OtherPlayer: React.FC<Props> = ({
   const action = useRef<THREE.AnimationAction>(null!);
 
   useEffect(() => {
-    const { scene, animations } = gltf;
+    const { scene, animations } = gltf as any;
     const g = group.current;
     //@ts-ignore
     const model = SkeletonUtils.clone(scene);
@@ -51,11 +50,14 @@ export const OtherPlayer: React.FC<Props> = ({
     action.current.loop = THREE.LoopRepeat;
     action.current.play();
     g.add(model);
-
+    const getAnimation = (animName: string) => {
+      const anims = animations.filter((e) => e.name === animName);
+      return anims[0];
+    };
     const animationsMap = new Map([
-      ["Idle", mixer.current.clipAction(animations[0])],
-      ["Walk", mixer.current.clipAction(animations[3])],
-      ["Run", mixer.current.clipAction(animations[2])],
+      ["Idle", mixer.current.clipAction(getAnimation("idle"))],
+      ["Walk", mixer.current.clipAction(getAnimation("walk"))],
+      ["Run", mixer.current.clipAction(getAnimation("run"))],
     ]);
 
     // change animation of avatar

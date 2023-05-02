@@ -46,11 +46,9 @@ export function Buildings() {
     const timer = window.setInterval(() => {
       if (!state.avatar) return;
 
-      const { avatar, vehicles } = state;
+      const { avatar, vehicles, vehicleName } = state;
       const pos =
-        target === "avatar"
-          ? avatar.position
-          : vehicles[avatar.userData.vehicleName].position;
+        target === "avatar" ? avatar.position : vehicles[vehicleName].position;
       const { x, z } = pos;
 
       const gps = posToGps([x / scale, -z / scale], originGPS);

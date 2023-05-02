@@ -15,11 +15,11 @@ export const Airplanes = () => {
   useFrame(() => {
     if (!state.avatar || !groupRef.current) return;
 
-    const { avatar, vehicles } = state;
+    const { avatar, vehicles, vehicleName } = state;
     const pos =
       target === TARGETS.AVATAR
         ? avatar.position
-        : vehicles[avatar.userData.vehicleName].position;
+        : vehicles[vehicleName].position;
     const { x, z } = pos;
     groupRef.current.position.set(x, 0, z);
   });
